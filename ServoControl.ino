@@ -6,9 +6,9 @@ int servoPinX = 6;
 int servoPinY = 5;
 int currentAngle_X = 90;
 int currentAngle_Y = 90;
-double Kp = 0.01;
-double Ki = 0.0001;
-double Kd = 0.001;
+double Kp = 0.03;
+double Ki = 0.0004;
+double Kd = 0.5;
 double dt = 0;
 double previousTime = 0;
 double integral = 0;
@@ -30,7 +30,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   
    if(Serial.available()){
-
+    //servoX.write(65);
+    //servoY.write(90);
     double currentTime = millis();
     dt = (currentTime - previousTime) / 1000;
     String receivedString = Serial.readStringUntil('\n');
@@ -57,9 +58,11 @@ int pid(int error){
   int proportional = error;
   integral = integral + (error * dt);
   double derivative = (error - previousError) / dt;
-  double output = (Kp * proportional) * (Ki * integral) + (Kd * derivative);
-  int myOutput = (int)ceil(output);
+  //double output = (Kp * proportional) * (Ki * integral) + (Kd * derivative);
+  //int myOutput = (int)ceil(output);
   previousError = error;
-
-  return myOutput;
+  double output = Kp * error + Ki * integral + Kd * derivative;
+  return output;
   }
+
+  
